@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.*;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.acmerobotics.roadrunner.AngularVelConstraint;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.HolonomicController;
@@ -62,15 +63,23 @@ public final class MecanumDrive {
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
+        // motor constants
+        public final double TICKS_PER_REV = 537.7;
+        public final double MAX_RPM = 312;
+
         // drive model parameters
         public double inPerTick = 0.02279735683; //0.0219154065307911
         public double lateralInPerTick = 0.02464285714; //0.0266969
-        public double trackWidthTicks = 0; //1151.478442613465
+
+        // roadrunner pid
+        private PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0.1,0,0.01,
+                getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
         // feedforward parameters (in tick units)
-        public double kS = 0; //1.2954337948391994
-        public double kV = 0; //0.004438011026705711
-        public double kA = 0.0005; //0.0005
+        public double kS = 1.1820202166687928;
+        public double kV = 0.004347305706310629;
+        public double trackWidthTicks = 1154.0689202060769;
+        public double kA = 0.0005;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -82,9 +91,12 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 0.0;
-        public double lateralGain = 0.0;
-        public double headingGain = 0.0; // shared with turn
+        // forward and backward movement
+        public double axialGain = 1.0;
+        // side to side movement
+        public double lateralGain = 4.0;
+        // heading is vertical axis rotation
+        public double headingGain = 1.0; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -489,5 +501,8 @@ public final class MecanumDrive {
                 defaultTurnConstraints,
                 defaultVelConstraint, defaultAccelConstraint
         );
+    }
+    public static double getMotorVelocityF(double ticksPerSecond) {
+        return 32767 / ticksPerSecond;
     }
 }

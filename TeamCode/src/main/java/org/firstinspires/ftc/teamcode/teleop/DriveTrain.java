@@ -12,7 +12,6 @@ public class DriveTrain extends OpMode {
     private final static double NORMAL_MODE = 0.85;
     private DcMotorEx leftFront, leftBack, rightBack, rightFront;
 
-
     @Override
     public void init() {
         telemetry.addData("Status", "Initialization Begin");
