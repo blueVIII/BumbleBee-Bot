@@ -215,12 +215,11 @@ public class mainOpMode extends OpMode
             liftMotor1.setPower(-0.6);
             liftMotor2.setPower(-0.6);
         } else {
-            if (liftMotor2.getCurrentPosition() < -3000) {
-                liftMotor1.setPower(-0.1);
-                liftMotor2.setPower(-0.1);
-            }
+            liftMotor1.setPower(-0.05);
+            liftMotor2.setPower(-0.05);
         }
         telemetry.addData("lift", liftMotor2.getCurrentPosition());
+        telemetry.addData("lift", liftMotor2.getPower());
 
         /*    23-24 lift pos aware code
         if (gamepad2.right_stick_y > 0.8) {
