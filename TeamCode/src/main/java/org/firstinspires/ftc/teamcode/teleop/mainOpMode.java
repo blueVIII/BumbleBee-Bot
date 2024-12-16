@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -44,6 +43,9 @@ public class mainOpMode extends OpMode
     private Servo liftClawRotate_Arm = null;
     private Servo liftClawExtender = null;
 
+    // lift encoder positions
+    private int liftMotor2StartPosition = 0;
+    private int liftMotor2EndPosition = 0;
 
     //last year's thingies
     private DcMotor intakeMotor = null;
@@ -119,6 +121,10 @@ public class mainOpMode extends OpMode
     // Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
     @Override
     public void init_loop() {
+        liftMotor2StartPosition = liftMotor2.getCurrentPosition();
+        liftMotor2EndPosition = -4800;  // upper limit
+
+        telemetry.addData("lift2 Start Position", liftMotor2StartPosition);
     }
 
     // Code to run ONCE when the driver hits PLAY
@@ -208,18 +214,24 @@ public class mainOpMode extends OpMode
         //targetPosition1 = liftMotor1.getCurrentPosition();
         //targetPosition2 = liftMotor2.getCurrentPosition();
 
-        if (gamepad2.right_stick_y > 0.8) { //if stick is forward
+        int liftMotor2Position = liftMotor2.getCurrentPosition();
+
+        // check the limit on up and down to ensure no over running on the lift
+        if (gamepad2.right_stick_y > 0.8 && liftMotor2Position < (liftMotor2StartPosition-11)) { //if stick is forward
             liftMotor1.setPower(0.8);
             liftMotor2.setPower(0.8);
-        } else if (gamepad2.right_stick_y < -0.8) { //if stick is back
+        } else if (gamepad2.right_stick_y < -0.8 && liftMotor2Position > (liftMotor2EndPosition)) { //if stick is back
             liftMotor1.setPower(-0.6);
             liftMotor2.setPower(-0.6);
-        } else {
+        }
+        else {
             liftMotor1.setPower(-0.05);
             liftMotor2.setPower(-0.05);
         }
-        telemetry.addData("lift", liftMotor2.getCurrentPosition());
-        telemetry.addData("lift", liftMotor2.getPower());
+        telemetry.addData("lift1", liftMotor1.getCurrentPosition());
+        telemetry.addData("lift1", liftMotor1.getPower());
+        telemetry.addData("lift2", liftMotor2.getCurrentPosition());
+        telemetry.addData("lift2", liftMotor2.getPower());
 
         /*    23-24 lift pos aware code
         if (gamepad2.right_stick_y > 0.8) {
