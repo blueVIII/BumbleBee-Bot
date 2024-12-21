@@ -215,10 +215,12 @@ public class mainOpMode extends OpMode
             liftMotor1.setPower(-0.6);
             liftMotor2.setPower(-0.6);
         } else {
-            if (liftMotor2.getCurrentPosition() < -3000) {
+            if (liftMotor2.getCurrentPosition() < -2500) {
                 liftMotor1.setPower(-0.1);
                 liftMotor2.setPower(-0.1);
             }
+            liftMotor1.setPower(0);
+            liftMotor2.setPower(0);
         }
         telemetry.addData("lift", liftMotor2.getCurrentPosition());
 
@@ -283,7 +285,7 @@ public class mainOpMode extends OpMode
 
         // - rotate claw (claw itself): (bumpers, same setup as above)//DONE, WORKS FOR ROTATING, UP DOWN
         if (gamepad2.dpad_up) {
-            liftClawExtender.setPosition(1); //idk positions
+            liftClawExtender.setPosition(0.6); //idk positions
         } else if (gamepad2.dpad_down) {
             liftClawExtender.setPosition(0); //idk positions
         } // up - rotate to ground, down - rotate upwards
@@ -301,6 +303,13 @@ public class mainOpMode extends OpMode
             liftClawRotate_Claw.setPosition(1);
             liftClawRotate_Arm.setPosition(0.3);
             liftClawExtender.setPosition(1);
+        }
+
+        if (gamepad2.dpad_left) {
+            while (true) {
+                liftMotor1.setPower(0.8);
+                liftMotor2.setPower(0.8);
+            }
         }
 
         /* 23-24 lift closing/door servo code, not needed
